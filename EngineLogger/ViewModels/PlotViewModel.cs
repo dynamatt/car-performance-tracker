@@ -7,6 +7,7 @@
 
     public class PlotSeries
     {
+        private const int MaximumNumberOfPoints = 200;
         private readonly PlotViewModel plotViewModel;
         private readonly LineSeries series;
 
@@ -19,6 +20,11 @@
 		public void AddPoint(double x, double y)
 		{
 			series.Points.Add(new DataPoint(x, y));
+            while (series.Points.Count > MaximumNumberOfPoints)
+            {
+                series.Points.RemoveAt(0);
+            }
+            this.plotViewModel.Refresh();
 		}
 
         public void AddPoint(DateTime x, double y)
