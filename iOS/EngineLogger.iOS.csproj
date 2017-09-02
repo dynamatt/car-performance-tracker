@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\EngineLogger\EngineLogger.projitems" Label="Shared" Condition="Exists('..\EngineLogger\EngineLogger.projitems')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
@@ -169,8 +170,14 @@
       <Name>Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\Obd2Interface\Obd2Interface.csproj">
+      <Project>{E64E7B22-A17F-4617-A454-97BED64B2170}</Project>
+      <Name>Obd2Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Obd2Logger\Obd2Logger.csproj">
+      <Project>{35E3FDB1-6DE5-4A95-92EE-111CB854AC45}</Project>
+      <Name>Obd2Logger</Name>
+    </ProjectReference>
   </ItemGroup>
-  <Import Project="..\EngineLogger\EngineLogger.projitems" Label="Shared" Condition="Exists('..\EngineLogger\EngineLogger.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Import Project="..\packages\NETStandard.Library.2.0.0\build\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\NETStandard.Library.targets')" />
