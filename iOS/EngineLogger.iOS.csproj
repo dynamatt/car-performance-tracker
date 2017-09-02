@@ -168,6 +168,7 @@
       <Project>{E8A86BF1-9F45-4960-B98A-686646069E5F}</Project>
       <Name>Utilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Obd2Interface\Obd2Interface.csproj">
   </ItemGroup>
   <Import Project="..\EngineLogger\EngineLogger.projitems" Label="Shared" Condition="Exists('..\EngineLogger\EngineLogger.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

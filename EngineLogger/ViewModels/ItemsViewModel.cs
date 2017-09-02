@@ -13,7 +13,7 @@ namespace EngineLogger
 
         public ItemsViewModel()
         {
-            Title = "Browse";
+            Title = "Select Data";
             Items = new ObservableRangeCollection<Item>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 

@@ -5,36 +5,67 @@
     using OxyPlot.Axes;
     using OxyPlot.Series;
 
-    public class PlotViewModel
+    public class PlotSeries
     {
+        private readonly PlotViewModel plotViewModel;
         private readonly LineSeries series;
 
+        internal PlotSeries(PlotViewModel plotViewModel, LineSeries series)
+        {
+            this.plotViewModel = plotViewModel;
+            this.series = series;
+        }
+
+		public void AddPoint(double x, double y)
+		{
+			series.Points.Add(new DataPoint(x, y));
+		}
+
+        public void AddPoint(DateTime x, double y)
+        {
+            this.AddPoint(DateTimeAxis.ToDouble(x), y);
+        }
+    }
+
+    public class PlotViewModel
+    {
         public PlotViewModel()
         {
             this.PlotModel = new PlotModel()
             {
                 Title = "Hello",
             };
-
-            series = new LineSeries();
-            this.PlotModel.Series.Add(series);
         }
 
         public PlotModel PlotModel { get; }
 
-        public void AddPoint(double x, double y)
+        public void Refresh()
         {
-            series.Points.Add(new DataPoint(x, y));
-            try
-            {
-                Xamarin.Forms.Device.BeginInvokeOnMainThread(() => this.PlotModel.InvalidatePlot(true));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex}");
-            }
+			try
+			{
+				Xamarin.Forms.Device.BeginInvokeOnMainThread(() => this.PlotModel.InvalidatePlot(true));
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Exception: {ex}");
+			}
+        }
 
-            Console.WriteLine("Point added");
+        public void ClearSeries()
+        {
+            this.PlotModel.Series.Clear();
+        }
+
+        public PlotSeries AddPlotSeries(string title=null)
+        {
+            var series = new LineSeries()
+            {
+                Title = title
+            };
+            this.PlotModel.Series.Add(series);
+            var plotSeries = new PlotSeries(this, series);
+
+            return plotSeries;
         }
     }
 }

@@ -3,31 +3,39 @@
     using System;
     using System.Windows.Input;
 
-    using Utilities;
-    using System.Timers;
+    using Xamarin.Forms;
 
-    using OxyPlot;
+    using Obd2Interface;
+    using Obd2Logger;
+
+    using Models;
+    using Utilities;
 
     public class RecordViewModel : BaseViewModel
     {
 		public PlotViewModel PlotViewModel { get; }
 
-        private readonly Timer timer;
+        private readonly Obd2Interface obd2interface;
+
+        private TimedPoller poller;
 
         public RecordViewModel()
         {
             PlotViewModel = new PlotViewModel();
 
-            StartPauseRecording = new DelegateCommand(StartRecording);
+            StartPauseRecording = new DelegateCommand(StartRecording, () => this.state != RecordingState.Recording);
+            FinishRecording = new DelegateCommand(CompleteRecording, () => this.state == RecordingState.Paused);
 
-            this.timer = new Timer(500);
-            timer.AutoReset = false;
-			timer.Elapsed += (sender, e) =>
-			{
-				this.PlotViewModel.AddPoint(DateTime.Now.Second, DateTime.Now.Millisecond - DateTime.Now.Second);
-                timer.Start();
-			};
+            IObd2Connection connection = DependencyService.Get<IObd2Connection>();
+            this.obd2interface = new Obd2Interface(connection);
 
+        }
+
+        private RecordingState state = RecordingState.NotStarted;
+        public RecordingState State
+        {
+            get => state;
+            set => this.SetProperty(ref state, value);
         }
 
         public ICommand StartPauseRecording { get; }
@@ -36,14 +44,43 @@
 
         public void StartRecording()
         {
-            timer.Start();
+            poller = new TimedPoller(this.obd2interface, TimeSpan.FromMilliseconds(500));
+
+            PlotViewModel.ClearSeries();
+
+            this.AddData(QueryFactory.GetEngineRpm, "RPM");
+            this.AddData(QueryFactory.GetVehicleSpeed, "Speed");
+
+            poller.Start();
             Console.WriteLine("Recording started");
         }
 
-        public void StopRecording()
+        public void PauseRecording()
         {
-            timer.Stop();
-            Console.WriteLine("Recording stopped");
+            poller?.Stop();
+            Console.WriteLine("Recording paused");
+        }
+
+        public void ResumeRecording()
+        {
+            poller?.Start();
+            Console.WriteLine("Recording resumed");
+        }
+
+        public void CompleteRecording()
+        {
+            
+            Console.WriteLine("Recording completed");
+        }
+
+        private void AddData<ResponseType>(Query<ResponseType> command, string name)
+            where ResponseType : SimpleValueResponse, new()
+        {
+            var plotSeries = PlotViewModel.AddPlotSeries(name);
+            poller.AddQuery(command).ResponseReceived += (sender, e) =>
+            {
+                plotSeries.AddPoint(DateTime.Now, e.Value);
+            };
         }
     }
 }

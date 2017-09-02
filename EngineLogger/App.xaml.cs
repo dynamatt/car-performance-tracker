@@ -4,6 +4,7 @@
 
 	using Xamarin.Forms;
 
+    using Services;
     using Views;
 
     public partial class App : Application
@@ -18,9 +19,15 @@
             InitializeComponent();
 
             if (UseMockDataStore)
-                DependencyService.Register<MockDataStore>();
+            {
+                DependencyService.Register<Mocks.MockDataStore>();
+                DependencyService.Register<Mocks.MockObd2Connection>();
+            }
             else
+            {
                 DependencyService.Register<CloudDataStore>();
+                DependencyService.Register<Obd2TcpConnection>();
+            }
 
             SetMainPage();
         }
@@ -52,7 +59,7 @@
 					},
                     new NavigationPage(new ItemsPage())
                     {
-                        Title = "Browse",
+                        Title = "Select Data",
                         Icon = "tab_feed.png"
                     },
                     new NavigationPage(new AboutPage())

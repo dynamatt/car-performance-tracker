@@ -9,7 +9,7 @@
     {
         private readonly Obd2Interface obd2Interface;
 
-        private readonly List<QueryResponseEventGenerator> queries;
+        private readonly List<QueryResponseEventGenerator> queries = new List<QueryResponseEventGenerator>();
 
         public Poller(Obd2Interface obd2Interface)
         {
@@ -46,23 +46,35 @@
 
         private readonly TimeSpan period;
 
+        private readonly SemaphoreSlim semaphore;
+
         public TimedPoller(Obd2Interface obd2Interface, TimeSpan period)
             : base(obd2Interface)
         {
             this.period = period;
-            this.timer = new Timer(s => this.SendAllQueries(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            this.timer = new Timer(s => this.SendQueries(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            this.semaphore = new SemaphoreSlim(1);
         }
 
         public void Start()
         {
             this.timer.Change(TimeSpan.Zero, this.period);
-
-            // TODO Add logic for when query sending is longer than timer period.
         }
 
         public void Stop()
         {
             this.timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        }
+
+        private void SendQueries()
+        {
+            if (this.semaphore.CurrentCount < 1)
+            {
+                return;
+            }
+            this.semaphore.Wait();
+            this.SendAllQueries();
+            this.semaphore.Release();
         }
     }
 }

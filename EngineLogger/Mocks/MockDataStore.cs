@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EngineLogger
+namespace EngineLogger.Mocks
 {
     public class MockDataStore : IDataStore<Item>
     {
