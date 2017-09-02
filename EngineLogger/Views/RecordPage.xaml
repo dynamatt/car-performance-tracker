@@ -4,6 +4,19 @@
     x:Class="EngineLogger.Views.RecordPage"
     xmlns:vm="clr-namespace:EngineLogger.ViewModels"
     xmlns:oxy="clr-namespace:OxyPlot.Xamarin.Forms;assembly=OxyPlot.Xamarin.Forms">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Style.Triggers>
+                    <Trigger TargetType="Button"
+                             Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="IsVisible" Value="False" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -11,15 +24,16 @@
         </Grid.RowDefinitions>
         
         <oxy:PlotView Grid.Row="0" Model="{Binding PlotViewModel.PlotModel}" />
-        
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            
-            <Button Grid.ColumnSpan="2" Text="Record" Command="{Binding StartPauseRecording}" />
-            
+            <Button Grid.ColumnSpan="2" Text="Record" Command="{Binding Start}" />
+            <Button Grid.ColumnSpan="2" Text="Pause" Command="{Binding Pause}" />
+            <Button Grid.Column="0" Text="Resume" Command="{Binding Resume}" />
+            <Button Grid.Column="1" Text="Finish" Command="{Binding Finish}" />
         </Grid>
 
     </Grid>

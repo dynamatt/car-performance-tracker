@@ -23,8 +23,10 @@
         {
             PlotViewModel = new PlotViewModel();
 
-            StartPauseRecording = new DelegateCommand(StartRecording, () => this.state != RecordingState.Recording);
-            FinishRecording = new DelegateCommand(CompleteRecording, () => this.state == RecordingState.Paused);
+            Start = new DelegateCommand(StartRecording, () => this.state == RecordingState.NotStarted);
+            Pause = new DelegateCommand(PauseRecording, () => this.state == RecordingState.Recording);
+            Resume = new DelegateCommand(ResumeRecording, () => this.state == RecordingState.Paused);
+            Finish = new DelegateCommand(CompleteRecording, () => this.state == RecordingState.Paused);
 
             IObd2Connection connection = DependencyService.Get<IObd2Connection>();
             this.obd2interface = new Obd2Interface(connection);
@@ -35,12 +37,19 @@
         public RecordingState State
         {
             get => state;
-            set => this.SetProperty(ref state, value);
+            set => this.SetProperty(ref state, value, "State", () => 
+            {
+                (Start as DelegateCommand)?.RaiseCanExecuteChanged();
+                (Pause as DelegateCommand)?.RaiseCanExecuteChanged();
+                (Resume as DelegateCommand)?.RaiseCanExecuteChanged();
+                (Finish as DelegateCommand)?.RaiseCanExecuteChanged();
+            });
         }
 
-        public ICommand StartPauseRecording { get; }
-
-        public ICommand FinishRecording { get; }
+        public ICommand Start { get; }
+        public ICommand Pause { get; }
+        public ICommand Resume { get; }
+        public ICommand Finish { get; }
 
         public void StartRecording()
         {
@@ -52,24 +61,31 @@
             this.AddData(QueryFactory.GetVehicleSpeed, "Speed");
 
             poller.Start();
+
+            this.State = RecordingState.Recording;
             Console.WriteLine("Recording started");
         }
 
         public void PauseRecording()
         {
             poller?.Stop();
+
+            this.State = RecordingState.Paused;
             Console.WriteLine("Recording paused");
         }
 
         public void ResumeRecording()
         {
             poller?.Start();
+
+            this.State = RecordingState.Recording;
             Console.WriteLine("Recording resumed");
         }
 
         public void CompleteRecording()
         {
-            
+
+            this.State = RecordingState.Finished;
             Console.WriteLine("Recording completed");
         }
 
