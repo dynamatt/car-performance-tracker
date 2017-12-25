@@ -179,6 +179,10 @@
       <Project>{35E3FDB1-6DE5-4A95-92EE-111CB854AC45}</Project>
       <Name>Obd2Logger</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EngineLogger.ViewModels\EngineLogger.ViewModels.csproj">
+      <Project>{FFFF87D3-BCC4-4FE1-9675-EF3F23317EBE}</Project>
+      <Name>EngineLogger.ViewModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
