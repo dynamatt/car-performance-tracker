@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="2.5.0.280555" />
+    <PackageReference Include="Prism.Forms" Version="7.1.0.123-pre" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ItemDetailPage.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="App.xaml.cs">
+      <DependentUpon>*.xaml</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="MainPage.xaml.cs">
+      <DependentUpon>*.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\EngineLogger.ViewModels\EngineLogger.ViewModels.csproj" />
+    <ProjectReference Include="..\..\Obd2Interface\Obd2Interface.csproj" />
+    <ProjectReference Include="..\..\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\..\Obd2Logger\Obd2Logger.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="ItemDetailPage.xaml" />
+  </ItemGroup>
+</Project>

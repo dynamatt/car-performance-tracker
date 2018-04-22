@@ -8,5 +8,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Obd2Interface\Obd2Interface.csproj" />
     <ProjectReference Include="..\Obd2Logger\Obd2Logger.csproj" />
+    <ProjectReference Include="..\Utilities\Utilities.csproj" />
   </ItemGroup>
 </Project>

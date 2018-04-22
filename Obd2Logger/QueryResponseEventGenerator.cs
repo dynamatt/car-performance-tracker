@@ -1,11 +1,12 @@
 ﻿namespace Obd2Logger
 {
     using System;
+    using System.Threading.Tasks;
     using Obd2Interface;
 
     public abstract class QueryResponseEventGenerator
 	{
-		internal abstract void SendQuery();
+		internal abstract Task SendQuery();
 	}
 
 	public class QueryResponseEventGenerator<ResponseType> : QueryResponseEventGenerator
@@ -21,9 +22,9 @@
 			this.obd2Interface = obd2Interface;
 		}
 
-		internal override void SendQuery()
+		internal override async Task SendQuery()
 		{
-			ResponseType response = obd2Interface.SendQuery(this.query);
+			ResponseType response = await obd2Interface.SendQuery(this.query);
 			this.ResponseReceived?.Invoke(this, response);
 		}
 

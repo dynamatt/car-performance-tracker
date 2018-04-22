@@ -34,5 +34,14 @@
             stream.Read(buffer, 0, count);
             return buffer;
         }
+
+        public byte[] Read()
+        {
+            NetworkStream stream = this.tcpClient.GetStream();
+            System.Threading.Thread.Sleep(500);
+            byte[] buffer = new byte[tcpClient.Available];
+            stream.Read(buffer, 0, tcpClient.Available);
+            return buffer;
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿namespace Obd2Interface
 {
+    using System.Diagnostics;
+
     /// <summary>
     /// An abstract class for an SAE Standard query.
     /// </summary>
@@ -32,6 +34,12 @@
 			byte[] response = connection.Read(Response.ResponseNumberOfBytes);
 			ResponseType r = new ResponseType();
 			r.Bytes = response;
+
+            if (r.NumberOfAdditionalDataBytes != 0)
+            {
+                Debug.WriteLine("Need to read more bytes");
+            }
+
 			return r;
 		}
     }
@@ -42,6 +50,54 @@
         public override Mode Mode
         {
             get { return Mode.ShowCurrentData; }
+        }
+    }
+
+    public class GetStoredTroubleCodesQuery : Query<TroubleCodesResponse>
+    {
+        public override Mode Mode
+        {
+            get { return Mode.ShowStoredDiagnosticTroubleCodes; }
+        }
+
+        /// <remarks>
+        /// No PID code required.
+        /// </remarks>
+        public override byte PidCode
+        {
+            get { return 0; }
+        }
+    }
+
+    public class GetPendingTroubleCodesQuery : Query<TroubleCodesResponse>
+    {
+        public override Mode Mode
+        {
+            get { return Mode.ShowPendingDiagnosticTroubleCodes; }
+        }
+
+        /// <remarks>
+        /// No PID code required.
+        /// </remarks>
+        public override byte PidCode
+        {
+            get { return 0; }
+        }
+    }
+
+    public class GetPermanentTroubleCodesQuery : Query<TroubleCodesResponse>
+    {
+        public override Mode Mode
+        {
+            get { return Mode.PermanentDiagnosticTroubleCodes; }
+        }
+
+        /// <remarks>
+        /// No PID code required.
+        /// </remarks>
+        public override byte PidCode
+        {
+            get { return 0; }
         }
     }
 }
